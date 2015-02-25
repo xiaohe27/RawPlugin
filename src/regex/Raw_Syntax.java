@@ -13,6 +13,7 @@ public class Raw_Syntax {
     private static Pattern typedField = Pattern.compile(typedField_str);
     private static Pattern argList = Pattern.compile("(" + typedField_str + "(\\s*,\\s*" + typedField_str + ")*" + ")?");
 
+
     public static boolean isId(String str) {
         return id.matcher(str).matches();
     }
