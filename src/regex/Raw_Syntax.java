@@ -6,14 +6,16 @@ import java.util.regex.Pattern;
  * Created by xiaohe on 2/25/15.
  */
 public class Raw_Syntax {
+    public static final byte lp = (byte) '{';
+    public static final byte rp = (byte) '}';
+
+
     private static String id_str = "\\p{Alpha}\\p{Alnum}*";
     private static String typedField_str = id_str + "\\s+" + id_str;
 
     private static Pattern id = Pattern.compile(id_str);
     private static Pattern typedField = Pattern.compile(typedField_str);
     private static Pattern argList = Pattern.compile("(" + typedField_str + "(\\s*,\\s*" + typedField_str + ")*" + ")?");
-
-    public static Pattern condCodePair = Pattern.compile("([\\p{Alnum}(),\\s\\/]+)(<\\|.*\\|>)");
 
     public static boolean isId(String str) {
         return id.matcher(str).matches();

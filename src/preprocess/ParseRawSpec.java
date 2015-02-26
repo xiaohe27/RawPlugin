@@ -3,8 +3,9 @@ package preprocess;
 import com.runtimeverification.rvmonitor.core.ast.Event;
 import regex.Raw_Syntax;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.regex.Matcher;
 
 public class ParseRawSpec {
 
@@ -12,25 +13,79 @@ public class ParseRawSpec {
     private HashMap<String,Event> eventNameToEventAST;
 
     private String rawSpec;
+    private ByteBuffer byteBuffer;
 
-    public ParseRawSpec(String rawSpec) {
+    private int balance = 0;
+    //balance 0 means that the num of { and } are equivalent.
+    //balance greater than 0 means inside some block
+    //balance less than 0 means ERROR!
+
+    public ParseRawSpec(String rawSpec) throws IOException {
         this.eventNameToActionCode = new HashMap<>();
         this.eventNameToEventAST = new HashMap<>();
         this.rawSpec = rawSpec;
 
+        this.byteBuffer = ByteBuffer.allocate(this.rawSpec.length());
+        this.byteBuffer.put(this.rawSpec.getBytes());
+        this.byteBuffer.flip();
+
         this.parseRawSpec();
     }
 
-    private void parseRawSpec() {
-        Matcher matcher = Raw_Syntax.condCodePair.matcher(rawSpec);
+    private void parseRawSpec() throws IOException {
+        String condPart = null;
+        String codePart = null;
 
-        while (matcher.find()) {
-            String cond = matcher.group(1);
-            String code = matcher.group(2);
 
-            System.out.println("Cond is " + cond);
-            System.out.println("Code is " + code);
+        while (this.byteBuffer.hasRemaining()) {
+            condPart = this.getCondPart();
+
+            System.out.println("Cond is "+condPart);
+
+            codePart = this.getCodePart();
+
+            System.out.println("Code is "+codePart);
         }
+
+    }
+
+    private String getCodePart() throws IOException {
+        StringBuilder sb = new StringBuilder();
+
+        while (this.byteBuffer.hasRemaining()) {
+            byte b = this.byteBuffer.get();
+
+            if (b == Raw_Syntax.lp) {
+                balance++;
+            } else if (b == Raw_Syntax.rp) {
+                balance--;
+                if (balance == 0) {
+                    return sb.toString();
+                }
+            }   else {
+                sb.append((char)b);
+            }
+
+        }
+
+        throw new IOException("Unexpected end of input while reading the event action method");
+    }
+
+    private String getCondPart() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        while (this.byteBuffer.hasRemaining()) {
+            byte b = this.byteBuffer.get();
+
+            if (b == Raw_Syntax.lp) {
+                balance++;
+                return sb.toString();
+            }   else {
+                sb.append((char)b);
+            }
+
+        }
+
+        throw new IOException("Unexpected end of input while reading the condition");
     }
 
 
@@ -42,12 +97,11 @@ public class ParseRawSpec {
         return eventNameToEventAST;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String input = "method1(String a1, int b2) \\/ m2 (Integer i1) \\/ t3() {//this is the code for all the 3 methods}";
         input += "w1() {} w2 \\/ c3() {haha}";
 
         // write your code here
-        input = "m(int a) <| g{f} |>";
         ParseRawSpec rawParser = new ParseRawSpec(input);
 
 
