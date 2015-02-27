@@ -1,0 +1,38 @@
+package mop;
+
+import java.io.*;
+import java.util.*;
+
+
+ HasNext (String i) {
+    
+    int i;
+    
+    event hasnext (Iterator i) {}
+    event next (Iterator i) {}
+
+    raw:
+if(abc){}
+else 
+	    System.out.println("Iterator "+i+ " invokes some method");
+	
+
+ 
+}
+
+another (int j) {
+
+event e1(int j, float f){}
+
+event e2(int j, double f2){}
+
+raw:
+while(f) {
+if(ff){println;}
+
+for(;;){}
+
+}
+
+}
+
