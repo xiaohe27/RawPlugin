@@ -1,0 +1,17 @@
+package mop;
+
+import java.io.*;
+import java.util.*;
+
+
+ HasNext (Iterator i) {
+    
+    
+    event hasnext (Iterator i) {}
+    event next (Iterator i) {}
+
+    }
+
+OtherSpec(Integer t) {
+   event x(Integer t) {}
+}

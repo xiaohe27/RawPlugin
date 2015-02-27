@@ -19,7 +19,7 @@ import java.util.*;
  
 }
 
-OtherSpec(int t) {
+OtherSpec(String t) {
 
 raw:
 //something to monitor prop

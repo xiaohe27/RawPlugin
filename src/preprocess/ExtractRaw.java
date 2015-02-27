@@ -3,6 +3,7 @@ package preprocess;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 /**
  * Created by hx312 on 26/02/2015.
@@ -59,8 +60,14 @@ public class ExtractRaw {
 
 
     public static void main(String[] args) throws IOException {
-        String rvmSpec = new String(Files.readAllBytes(Paths.get("HasNext.rvm")));
-        System.out.println("The raw code is :");
-        System.out.println(getRawMonitoringCode(rvmSpec));
+        String rvmSpec = new String(Files.readAllBytes(Paths.get("test/HasNext.rvm")));
+        HashMap<Integer,String> rawCodes = getRawMonitoringCode(rvmSpec);
+        for (Integer pos : rawCodes.keySet()) {
+            String rawCode = rawCodes.get(pos);
+            System.out.println("Pos "+pos+";\nRaw Code:\n"+rawCode);
+            rvmSpec = rvmSpec.replace("raw:"+rawCode, "");
+        }
+        System.out.println("After removing raw monitoring code:\n");
+        System.out.println(rvmSpec);
     }
 }

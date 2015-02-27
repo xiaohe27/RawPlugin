@@ -4,9 +4,9 @@ import java.io.*;
 import java.util.*;
 
 
- HasNext (String i) {
+ HasNext (Iterator i) {
     
-    int i;
+    int c;
     
     event hasnext (Iterator i) {}
     event next (Iterator i) {}
@@ -20,11 +20,11 @@ else
  
 }
 
-another (int j) {
+another (Integer j) {
 
-event e1(int j, float f){}
+event e1(Integer j, float f){}
 
-event e2(int j, double f2){}
+event e2(Integer j, double f2){}
 
 raw:
 while(f) {
