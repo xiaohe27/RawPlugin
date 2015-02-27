@@ -19,3 +19,9 @@ import java.util.*;
  
 }
 
+OtherSpec(int t) {
+
+raw:
+//something to monitor prop
+}
+
